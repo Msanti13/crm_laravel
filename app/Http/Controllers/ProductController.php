@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Models\Categoria;
+use App\Models\Proveedor;
 
 class ProductController extends Controller
 {
@@ -12,8 +14,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all(); //
-        return view('index', compact('products')); // Retornar la vista 'index' con la variable 'products'
+        $products = Product::with('categoria', 'proveedor')->get();
+        return view('productos.index', compact('products'));
     }
 
     /**
@@ -21,47 +23,50 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
-        return view('create');
+        $categorias = Categoria::all();
+        $proveedores = Proveedor::all();
+        return view('productos.create', compact('categorias', 'proveedores'));
     }
-
+    
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
-        $request->validate([ // Validación de los datos recibidos del formulario 
-            'name' => 'required', // Validación del nombre
-            'description' => 'required', // Validación de la descripción
-            'price' => 'required|numeric', // Validación del precio
-            'stock'  => 'required|integer'
+        $request->validate([
+            'nombre' => 'required|string|max:200',
+            'precio_compra' => 'required|numeric|min:0',
+            'precio_venta' => 'required|numeric|min:0',
+            'stock_actual' => 'required|integer|min:0',
+            'categoria' => 'required|exists:categorias,id',
+            'proveedor' => 'required|exists:proveedores,id',
+            'estado' => 'required|boolean'
         ]);
 
-        Product::create($request->all()); // Crear un nuevo producto con los datos validados
+        Product::create($request->all());
 
-        return redirect()->route('products.index') // Redirigir a la ruta 'index' después de crear el producto
-                         ->with('success', 'Producto creado exitosamente.'); // Mensaje de éxitos
+        return redirect()->route('products.index')
+                         ->with('success', 'Producto creado exitosamente.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show($id)
     {
-        //
+        $product = Product::with('categoria', 'proveedor')->findOrFail($id);
+        return view('productos.show', compact('product'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-    
-        
     {
-        //
         $product = Product::findOrFail($id);
-        return view('edit', compact('product'));
+        $categorias = Categoria::all();
+        $proveedores = Proveedor::all();
+        return view('productos.edit', compact('product', 'categorias', 'proveedores'));
     }
 
     /**
@@ -69,21 +74,33 @@ class ProductController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
         $product = Product::findOrFail($id);
+
+        $request->validate([
+            'nombre' => 'required|string|max:200',
+            'precio_compra' => 'required|numeric|min:0',
+            'precio_venta' => 'required|numeric|min:0',
+            'stock_actual' => 'required|integer|min:0',
+            'categoria' => 'required|exists:categorias,id',
+            'proveedor' => 'required|exists:proveedores,id',
+            'estado' => 'required|boolean'
+        ]);
+
         $product->update($request->all());
+
         return redirect()->route('products.index')
                          ->with('success', 'Producto actualizado exitosamente.');
-
-       
-
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        $product = Product::findOrFail($id);
+        $product->delete();
+
+        return redirect()->route('products.index')
+                         ->with('success', 'Producto eliminado exitosamente.');
     }
 }

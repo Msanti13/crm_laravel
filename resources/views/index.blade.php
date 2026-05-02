@@ -38,9 +38,12 @@
                 <tr>
                     
                     <th>Nombre</th>
-                    <th>Descripción</th>
-                    <th>Precio</th>
-                    <th>Stock</th>
+                    <th>Precio Compra</th>
+                    <th>Precio Venta</th>
+                    <th>Stock Actual</th>
+                    <th>Categoría</th>
+                    <th>Proveedor</th>
+                    <th>Estado</th>
                     <th style="text-align: center;">Acciones</th> 
                     
                 </tr>
@@ -48,10 +51,13 @@
             <tbody>
                 @foreach ($products as $product)
                     <tr>
-                        <td>{{ $product->name }}</td>
-                        <td>{{ $product->description }}</td>
-                        <td>{{ $product->price }}</td>
-                        <td>{{ $product->stock }}</td>
+                        <td>{{ $product->nombre }}</td>
+                        <td>{{ $product->precio_compra }}</td>
+                        <td>{{ $product->precio_venta }}</td>
+                        <td>{{ $product->stock_actual }}</td>
+                        <td>{{ $product->categoria }}</td>
+                        <td>{{ $product->proveedor }}</td>
+                        <td>{{ $product->estado }}</td>
                         <td>
                         <a href="{{ route('products.edit', $product->id) }}" >Editar</a>
                         </td>

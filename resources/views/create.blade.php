@@ -36,27 +36,46 @@
         </div>
     @endif
 
-    <form action="{{ route('products.store') }}" method="POST">
+    <form action="{{ route('products.store') }}" method="POST"> 
         
         @csrf
 
         <div>
-            <label for="name">Nombre del Producto:</label>
-            <input type="text" name="name" id="name" value="{{ old('name') }}" required>
+            <label for="nombre">Nombre del Producto:</label>
+            <input type="text" name="nombre" id="nombre" value="{{ old('nombre') }}" required>
         </div>
 
         <div>
-            <label for="description">Descripción:</label>
-            <textarea name="description" id="description">{{ old('description') }}</textarea>
+            <label for="precio_compra">Precio de Compra:</label>
+            <textarea name="precio_compra" id="precio_compra">{{ old('precio_compra') }}</textarea>
         </div>
 
         <div>
-            <label for="price">Precio:</label>
-            <input type="number" name="price" id="price" step="0.01" value="{{ old('price') }}" required>
+            <label for="precio_venta">Precio de Venta:</label>
+            <input type="number" name="precio_venta" id="precio_venta" step="0.01" value="{{ old('precio_venta') }}" required>
         </div>
         <div>
-            <label for="stock">Stock:</label>
-            <input type="number" name="stock" id="stock" required>
+            <label for="stock_actual">Stock Actual:</label>
+            <input type="number" name="stock_actual" id="stock_actual" required>
+        </div>
+        <div>
+            <label for="categoria">Categoria:</label>
+            <select name="categoria" id="categoria">
+                <option value="">Seleccione una categoria</option>
+                    @foreach($categorias as $categoria)
+                    <option value="{{ $categoria->id }}">{{ $categoria->nombre }}</option>
+                    @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label for="proveedores">Proveedor:</label>
+            <select name="proveedores" id="proveedores">
+                <option value="">Selecciones un proveedor</option>
+                    {{-- @foreach ($proveedores as $proveedor)
+                    <option value="{{ $proveedor->id }}">{{ $proveedor->nombre }}</option> 
+                    @endforeach --}}
+            </select>
         </div>
         <button type="submit">Guardar Producto</button>
         <a href="{{ route('products.index') }}">Cancelar</a>
